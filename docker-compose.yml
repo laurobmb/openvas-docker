@@ -29,18 +29,13 @@ services:
         - ./data/letsencrypt-www:/tmp/letsencrypt
   letsencrypt:
       restart: always
-      image: kvaps/letsencrypt-webroot
+      image: certbot/certbot:latest
+      command: certonly --webroot --webroot-path=/usr/share/nginx/html/letsencrypt --email laurobmb@gmail.com --agree-tos --no-eff-email -d app5.w0rm30.seg.br
       volumes:
         - ./data/letsencrypt:/etc/letsencrypt
         - ./data/letsencrypt-www:/tmp/letsencrypt
       links:
         - nginx
-      environment:
-        DOMAINS: example.com
-        EMAIL: webmaster@example.com
-        WEBROOT_PATH: /tmp/letsencrypt
-        EXP_LIMIT: 30
-        CHECK_FREQ: 30
   openvas:
       restart: always
       image: mikesplain/openvas
@@ -58,6 +53,6 @@ services:
   # Daily updates to openvas
   cron:
       restart: always
-      image: funkyfuture/deck-chores
+      image: funkyfuture/deck-chores:1
       volumes:
         - "/var/run/docker.sock:/var/run/docker.sock"
