@@ -31,7 +31,13 @@ services:
   letsencrypt:
     restart: always
     image: certbot/certbot:latest
-    command: certonly --webroot -w /tmp/letsencrypt -m laurobmb@gmail.com -d app1.w0rm30.seg.br --agree-tos
+    command: certonly \
+      --webroot \
+      -w /tmp/letsencrypt \
+      -m laurobmb@gmail.com \
+      -d app2.w0rm30.seg.br \
+      -d w0rm30.seg.br \
+      --agree-tos
     volumes:
       - ./data/letsencrypt:/etc/letsencrypt
       - ./data/letsencrypt-www:/tmp/letsencrypt
