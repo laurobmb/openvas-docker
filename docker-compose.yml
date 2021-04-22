@@ -1,6 +1,6 @@
 version: '3'
 services:
-  # This Nginx will be the first to start, and it will serve the redirect as well as ACME verification
+
   nginx:
       image: nginx:alpine
       restart: always
@@ -13,7 +13,7 @@ services:
         - ./conf/nginx.conf:/etc/nginx/nginx.conf:ro
         - ./data/letsencrypt:/etc/letsencrypt
         - ./data/letsencrypt-www:/tmp/letsencrypt
-  # This Nginx requires the certificates to exist, otherwise will fail
+
   nginx_ssl:
       image: nginx:alpine
       restart: always
@@ -27,21 +27,17 @@ services:
         - ./conf/nginx_ssl.conf:/etc/nginx/nginx.conf:ro
         - ./data/letsencrypt:/etc/letsencrypt
         - ./data/letsencrypt-www:/tmp/letsencrypt
+
   letsencrypt:
-      restart: always
-      image: certbot/certbot:latest
-      command: certonly \
-        --webroot \
-        --webroot-path=/etc/letsencrypt \
-        --email laurobmb@gmail.com \
-        --agree-tos \
-        --no-eff-email \
-        -d app1.w0rm30.seg.br
-      volumes:
-        - ./data/letsencrypt:/etc/letsencrypt
-        - ./data/letsencrypt-www:/tmp/letsencrypt
-      links:
-        - nginx
+    restart: always
+    image: certbot/certbot:latest
+    command: certonly --webroot -w /tmp/letsencrypt -m laurobmb@gmail.com -d app1.w0rm30.seg.br --agree-tos
+    volumes:
+      - ./data/letsencrypt:/etc/letsencrypt
+      - ./data/letsencrypt-www:/tmp/letsencrypt
+    links:
+      - nginx
+
   openvas:
       restart: always
       image: mikesplain/openvas
@@ -56,7 +52,7 @@ services:
       labels:
          deck-chores.dump.command: sh -c "greenbone-nvt-sync; openvasmd --rebuild --progress"
          deck-chores.dump.interval: daily
-  # Daily updates to openvas
+
   cron:
       restart: always
       image: funkyfuture/deck-chores:1
